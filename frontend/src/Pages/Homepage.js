@@ -20,7 +20,7 @@ const Homepage = () => {
                 <Tabs isFitted variant="soft-rounded">
                     <TabList mb="1em">
                         <Tab width="50%">Login</Tab>
-                        <Tab width="50%">Sign Up</Tab>
+                        <Tab width="50%">SignUp</Tab>
                     </TabList>
                     <TabPanels>
                         <TabPanel>
