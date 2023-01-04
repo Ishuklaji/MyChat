@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, useToast, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const Login = () => {
     const [show, setShow] = useState(false);
@@ -113,7 +113,7 @@ const Login = () => {
                 Get Guest User Credentials
             </Button>
         </VStack>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
