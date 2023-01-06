@@ -233,7 +233,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                         width={70}
                                         style={{ marginBottom: 15, marginLeft: 0 }}
                                     /> */}
-                                    <Image w="70px" h="50px" src="../animations/typing.gif" />
+                                    <Image w="70px" h="50px" src="https://support.signal.org/hc/article_attachments/360016877511/typing-animation-3x.gif" />
                                 </div>
                             ) : (
                                 <></>
@@ -243,6 +243,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                 bg="#E0E0E0"
                                 placeholder="Enter a message.."
                                 value={newMessage}
+                                pos="fixed"
                                 onChange={typingHandler}
                             />
                         </FormControl>
