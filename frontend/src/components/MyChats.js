@@ -45,7 +45,7 @@ const MyChats = ({ fetchAgain }) => {
 
   return (
     <Box
-      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
       p={3}
@@ -79,9 +79,9 @@ const MyChats = ({ fetchAgain }) => {
         p={3}
         bg="#F8F8F8"
         w="100%"
-        h="100%"
+        // h="100%"
         borderRadius="lg"
-        overflowY="hidden"
+        overflowY="scroll"
       >
         {chats ? (
           <Stack overflowY="scroll">

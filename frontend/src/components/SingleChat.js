@@ -162,7 +162,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <>
                     <Text
                         fontSize={{ base: "28px", md: "30px" }}
-                        pb={3}
+                        // pb={3}
                         px={2}
                         w="100%"
                         fontFamily="Work sans"
@@ -195,15 +195,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             ))}
                     </Text>
                     <Box
-                        d="flex"
+                        border="2px solid red"
+                        display="flex"
                         flexDir="column"
-                        justifyContent="flex-end"
+                        justifyContent="space-between"
                         p={3}
                         bg="#E8E8E8"
                         w="100%"
-                        h="100%"
+                        h="auto"
                         borderRadius="lg"
-                        overflowY="hidden"
+                        // overflowY="scroll"
+                        position="relative"
+                    // zIndex={1}
                     >
                         {loading ? (
                             <Spinner
@@ -239,11 +242,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                 <></>
                             )}
                             <Input
+                                // mt="-10px"
                                 variant="filled"
                                 bg="#E0E0E0"
                                 placeholder="Enter a message.."
                                 value={newMessage}
-                                pos="fixed"
+                                // position="absolute"
+                                width="100%"
+                                zIndex={2}
                                 onChange={typingHandler}
                             />
                         </FormControl>

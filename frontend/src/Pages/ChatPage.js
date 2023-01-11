@@ -12,7 +12,11 @@ const Chatpage = () => {
     return (
         <div style={{ width: "100%" }}>
             {user && <SideDrawer />}
-            <Flex justifyContent="space-between" w="100%" h="91.5vh" p="10px">
+            <Flex justifyContent="space-between"
+                w="100%"
+                h={{ base: "auto", sm: "auto", md: "91.5vh", lg: "91.5vh", xl: "91.5vh" }}
+                p="10px"
+            >
                 {user && <MyChats fetchAgain={fetchAgain} />}
                 {user && (
                     <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />

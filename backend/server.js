@@ -43,12 +43,12 @@ app.use(notFound)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
-const server = app.listen(5000, console.log(`server started at http://localhost:${PORT}`.yellow));
+const server = app.listen(PORT, console.log(`server started at http://localhost:${PORT}`.yellow));
 
 const io = require('socket.io')(server, {
     pingTimeout: 60000,
     cors: {
-        origin: "http://localhost:3000"
+        origin: "https://la-charla.netlify.app/"
     }
 })
 

@@ -1,13 +1,25 @@
 import { Avatar, Tooltip, Box } from "@chakra-ui/react";
+import { useEffect } from "react";
 // import ScrollableFeed from "react-scrollable-feed";
 import { isLastMessage, isSameSender, isSameSenderMargin, isSameUser, } from "../config/ChatLogics";
 import { ChatState } from "../Context/ChatProvider";
 
 const ScrollableChat = ({ messages }) => {
     const { user } = ChatState();
+    useEffect(() => {
+        let scrl = document.getElementById("scrl");
+        scrl.scrollTo(0, 2147483647)
+        // console.log(scrl)
+        // console.log(window.scrl.innerHeight)
+    }, [messages])
 
     return (
-        <Box overflowX="hidden" overflowY="auto">
+        <Box id="scrl" height={{ base: "600px", sm: "600px", md: "450px", lg: "450px" }}
+            border="2px solid green"
+            overflowX="hidden"
+            overflowY="scroll"
+            scrollBehavior="smooth"
+        >
             {messages &&
                 messages.map((m, i) => (
                     <div style={{ display: "flex" }} key={m._id}>
@@ -26,8 +38,7 @@ const ScrollableChat = ({ messages }) => {
                             )}
                         <span
                             style={{
-                                backgroundColor: `${m.sender._id === user._id ? "#BEE3F8" : "#B9F5D0"
-                                    }`,
+                                backgroundColor: `${m.sender._id === user._id ? "#BEE3F8" : "#B9F5D0"}`,
                                 marginLeft: isSameSenderMargin(messages, m, i, user._id),
                                 marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
                                 borderRadius: "20px",
