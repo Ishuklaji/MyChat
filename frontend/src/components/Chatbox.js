@@ -9,7 +9,6 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
     return (
         <Box
             className="chbx"
-            border="2px solid blue"
             display={{ base: selectedChat ? "flex" : "none", md: "flex" }}
             alignItems="center"
             flexDir="column"

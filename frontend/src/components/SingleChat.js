@@ -12,7 +12,7 @@ import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
-const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+const ENDPOINT = "https://lacharla.onrender.com"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -49,7 +49,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             setLoading(true);
 
             const { data } = await axios.get(
-                `http://localhost:5000/api/message/${selectedChat._id}`,
+                `https://lacharla.onrender.com/api/message/${selectedChat._id}`,
                 config
             );
             setMessages(data);
@@ -80,7 +80,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 };
                 setNewMessage("");
                 const { data } = await axios.post(
-                    "http://localhost:5000/api/message",
+                    "https://lacharla.onrender.com/api/message",
                     {
                         content: newMessage,
                         chatId: selectedChat,
@@ -195,7 +195,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             ))}
                     </Text>
                     <Box
-                        border="2px solid red"
                         display="flex"
                         flexDir="column"
                         justifyContent="space-between"
