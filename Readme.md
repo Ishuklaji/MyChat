@@ -13,30 +13,25 @@ Uses Socket.io for real time communication and stores user details in encrypted 
   
 ## Demo
 
-https://talk-a-tive.herokuapp.com/
+https://la-charla.netlify.app/
 
-  
 # Features
 
 ### Authenticaton
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/login.PNG)
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/signup.PNG)
-### Real Time Chatting with Typing indicators
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/real-time.PNG)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/login.png?raw=true)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/signup.png?raw=true)
 ### One to One chat
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/mainscreen.PNG)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/chat.png?raw=true)
 ### Search Users
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/search.PNG)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/searchuser.png?raw=true)
 ### Create Group Chats
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/new%20grp.PNG)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/create%20group.png?raw=true)
 ### Notifications 
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/group%20%2B%20notif.PNG)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/notification.png?raw=true)
 ### Add or Remove users from group
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/add%20rem.PNG)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/edit%20group.png?raw=true)
 ### View Other user Profile
-![](https://github.com/piyush-eon/mern-chat-app/blob/master/screenshots/profile.PNG)
+![](https://github.com/Ishuklaji/MyChat/blob/master/screenshots/user%20profile.png?raw=true)
 ## Made By
 
-- [@Piyush-eon](https://github.com/piyush-eon)
-
-  
+- [ishuklaji](https://github.com/ishuklaji)
