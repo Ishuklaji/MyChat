@@ -1,4 +1,4 @@
-import { FormControl, Input, Box, Text, IconButton, Spinner, useToast, Image } from "@chakra-ui/react";
+import { FormControl, Input, Box, Text, IconButton, Spinner, useToast, Image, useColorModeValue } from "@chakra-ui/react";
 import "./styles.css";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import React, { useEffect, useState } from "react";
@@ -12,7 +12,8 @@ import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
-const ENDPOINT = "https://lacharla.onrender.com"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+import { BASE_URL } from "../config/api";
+const ENDPOINT = BASE_URL;
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -23,6 +24,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const [typing, setTyping] = useState(false);
     const [istyping, setIsTyping] = useState(false);
     const toast = useToast();
+
+    const messagesBg = useColorModeValue("#E8E8E8", "gray.700");
+    const inputBg = useColorModeValue("#E0E0E0", "gray.600");
+    const headerColor = useColorModeValue("gray.800", "whiteAlpha.900");
 
     // const defaultOptions = {
     //     loop: true,
@@ -49,7 +54,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             setLoading(true);
 
             const { data } = await axios.get(
-                `https://lacharla.onrender.com/api/message/${selectedChat._id}`,
+                `${BASE_URL}/api/message/${selectedChat._id}`,
                 config
             );
             setMessages(data);
@@ -80,10 +85,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 };
                 setNewMessage("");
                 const { data } = await axios.post(
-                    "https://lacharla.onrender.com/api/message",
+                    `${BASE_URL}/api/message`,
                     {
                         content: newMessage,
-                        chatId: selectedChat,
+                        chatId: selectedChat._id,
                     },
                     config
                 );
@@ -102,6 +107,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
     };
 
+    const reactToMessage = async (messageId, emoji) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const { data } = await axios.put(
+                `${BASE_URL}/api/message/${messageId}/react`,
+                { emoji },
+                config
+            );
+            setMessages((prev) => prev.map((m) => (m._id === data._id ? data : m)));
+            socket.emit("message reaction", data);
+        } catch (error) {
+            toast({
+                title: "Error Occured!",
+                description: "Failed to react to the message",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "bottom",
+            });
+        }
+    };
+
     useEffect(() => {
         socket = io(ENDPOINT);
         socket.emit("setup", user);
@@ -109,7 +140,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.on("typing", () => setIsTyping(true));
         socket.on("stop typing", () => setIsTyping(false));
 
-
+        return () => {
+            socket.disconnect();
+        };
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -117,10 +151,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
         selectedChatCompare = selectedChat;
 
+        // eslint-disable-next-line
     }, [selectedChat]);
 
     useEffect(() => {
-        socket.on("message recieved", (newMessageRecieved) => {
+        socket.on("message received", (newMessageRecieved) => {
             if (
                 !selectedChatCompare || // if chat is not selected or doesn't match current chat
                 selectedChatCompare._id !== newMessageRecieved.chat._id
@@ -133,6 +168,22 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 setMessages([...messages, newMessageRecieved]);
             }
         });
+
+        socket.on("message reaction updated", (updatedMessage) => {
+            if (
+                selectedChatCompare &&
+                selectedChatCompare._id === updatedMessage.chat._id
+            ) {
+                setMessages((prev) =>
+                    prev.map((m) => (m._id === updatedMessage._id ? updatedMessage : m))
+                );
+            }
+        });
+
+        return () => {
+            socket.off("message received");
+            socket.off("message reaction updated");
+        };
     });
 
     const typingHandler = (e) => {
@@ -162,16 +213,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <>
                     <Text
                         fontSize={{ base: "28px", md: "30px" }}
-                        // pb={3}
                         px={2}
                         w="100%"
                         fontFamily="Work sans"
-                        d="flex"
+                        fontWeight="600"
+                        color={headerColor}
+                        display="flex"
                         justifyContent={{ base: "space-between" }}
                         alignItems="center"
                     >
                         <IconButton
-                            d={{ base: "flex", md: "none" }}
+                            display={{ base: "flex", md: "none" }}
                             icon={<ArrowBackIcon />}
                             onClick={() => setSelectedChat("")}
                         />
@@ -199,13 +251,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         flexDir="column"
                         justifyContent="space-between"
                         p={3}
-                        bg="#E8E8E8"
+                        bg={messagesBg}
                         w="100%"
                         h="auto"
                         borderRadius="lg"
-                        // overflowY="scroll"
                         position="relative"
-                    // zIndex={1}
                     >
                         {loading ? (
                             <Spinner
@@ -217,7 +267,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             />
                         ) : (
                             <div className="messages">
-                                <ScrollableChat messages={messages} />
+                                <ScrollableChat
+                                    messages={messages}
+                                    reactToMessage={reactToMessage}
+                                />
                             </div>
                         )}
 
@@ -229,26 +282,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         >
                             {istyping ? (
                                 <div>
-                                    {/* <Lottie
-                                        options={defaultOptions}
-                                        // height={50}
-                                        width={70}
-                                        style={{ marginBottom: 15, marginLeft: 0 }}
-                                    /> */}
                                     <Image w="70px" h="50px" src="https://support.signal.org/hc/article_attachments/360016877511/typing-animation-3x.gif" />
                                 </div>
                             ) : (
                                 <></>
                             )}
                             <Input
-                                // mt="-10px"
                                 variant="filled"
-                                bg="#E0E0E0"
+                                bg={inputBg}
                                 placeholder="Enter a message.."
                                 value={newMessage}
-                                // position="absolute"
                                 width="100%"
                                 zIndex={2}
+                                borderRadius="xl"
                                 onChange={typingHandler}
                             />
                         </FormControl>
@@ -256,8 +302,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 </>
             ) : (
                 // to get socket.io on same page
-                <Box d="flex" alignItems="center" justifyContent="center" h="100%">
-                    <Text fontSize="3xl" pb={3} fontFamily="Work sans">
+                <Box display="flex" alignItems="center" justifyContent="center" h="100%">
+                    <Text fontSize="3xl" pb={3} fontFamily="Work sans" color={headerColor}>
                         Click on a user to start chatting
                     </Text>
                 </Box>

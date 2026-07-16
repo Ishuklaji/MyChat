@@ -40,7 +40,8 @@ const allMessages = asyncHandler(async (req, res) => {
     try {
         const messages = await Message.find({ chat: req.params.chatId })
             .populate("sender", "name pic email")
-            .populate("chat");
+            .populate("chat")
+            .populate("reactions.user", "name");
         res.json(messages);
     } catch (error) {
         res.status(400);
@@ -48,4 +49,44 @@ const allMessages = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { sendMessage, allMessages }
+const toggleReaction = asyncHandler(async (req, res) => {
+    const { emoji } = req.body;
+    const { messageId } = req.params;
+
+    if (!emoji) {
+        res.status(400);
+        throw new Error("Emoji is required");
+    }
+
+    const message = await Message.findById(messageId);
+
+    if (!message) {
+        res.status(404);
+        throw new Error("Message not found");
+    }
+
+    const existingIndex = message.reactions.findIndex(
+        (r) => r.user.toString() === req.user._id.toString()
+    );
+
+    if (existingIndex > -1) {
+        if (message.reactions[existingIndex].emoji === emoji) {
+            message.reactions.splice(existingIndex, 1);
+        } else {
+            message.reactions[existingIndex].emoji = emoji;
+        }
+    } else {
+        message.reactions.push({ user: req.user._id, emoji });
+    }
+
+    await message.save();
+
+    const updatedMessage = await Message.findById(messageId)
+        .populate("sender", "name pic")
+        .populate("chat")
+        .populate("reactions.user", "name");
+
+    res.json(updatedMessage);
+});
+
+module.exports = { sendMessage, allMessages, toggleReaction }

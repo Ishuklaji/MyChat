@@ -1,13 +1,14 @@
 import {
-    Box, Button, Menu, MenuList,
+    Button, Menu, MenuList,
     MenuButton, Text, Tooltip, MenuDivider,
     Flex, Avatar, MenuItem, Drawer,
     DrawerBody, Input,
     DrawerContent, useToast,
     DrawerHeader, Spinner,
-    DrawerOverlay, useDisclosure, Badge
+    DrawerOverlay, useDisclosure, Badge,
+    useColorMode, useColorModeValue, IconButton
 } from '@chakra-ui/react';
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import React, { useState } from 'react'
 import { ChatState } from "../../Context/ChatProvider";
 import ProfileModal from "./ProfileModal";
@@ -16,6 +17,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import UserListItem from "../userAvatar/UserListItem";
 import { getSender } from "../../config/ChatLogics";
+import { BASE_URL } from "../../config/api";
 
 const SideDrawer = () => {
     const [search, setSearch] = useState("");
@@ -33,6 +35,8 @@ const SideDrawer = () => {
     } = ChatState();
 
     const toast = useToast();
+    const { colorMode, toggleColorMode } = useColorMode();
+    const barBg = useColorModeValue("white", "gray.800");
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -64,7 +68,7 @@ const SideDrawer = () => {
                 },
             };
 
-            const { data } = await axios.get(`https://lacharla.onrender.com/api/user?search=${search}`, config);
+            const { data } = await axios.get(`${BASE_URL}/api/user?search=${search}`, config);
 
             setLoading(false);
             setSearchResult(data);
@@ -93,7 +97,7 @@ const SideDrawer = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.post(`https://lacharla.onrender.com/api/chat`, { userId }, config);
+            const { data } = await axios.post(`${BASE_URL}/api/chat`, { userId }, config);
 
             if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
             setSelectedChat(data);
@@ -117,10 +121,11 @@ const SideDrawer = () => {
             <Flex
                 justifyContent="space-between"
                 alignItems="center"
-                bg="white"
+                bg={barBg}
                 w="100%"
                 p="5px 10px 5px 10px"
-                borderWidth="5px"
+                borderBottomWidth="1px"
+                boxShadow="sm"
             >
                 <Tooltip
                     label="Search Users to chat"
@@ -129,15 +134,28 @@ const SideDrawer = () => {
                 >
                     <Button variant="ghost" onClick={onOpen}>
                         <i className="fas fa-search"></i>
-                        <Text d={{ base: "none", md: "flex" }} px={4}>
+                        <Text display={{ base: "none", md: "flex" }} px={4}>
                             Search User
                         </Text>
                     </Button>
                 </Tooltip>
-                <Text fontSize="2xl" fontFamily="Work sans">
+                <Text
+                    fontSize="2xl"
+                    fontFamily="Work sans"
+                    fontWeight="700"
+                    bgGradient="linear(to-r, teal.400, purple.500)"
+                    bgClip="text"
+                >
                     La Charla
                 </Text>
-                <div>
+                <Flex alignItems="center">
+                    <IconButton
+                        aria-label="Toggle color mode"
+                        onClick={toggleColorMode}
+                        variant="ghost"
+                        mr={2}
+                        icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+                    />
                     <Menu>
                         <MenuButton p={1}>
                             {/* <NotificationBadge
@@ -183,7 +201,7 @@ const SideDrawer = () => {
                             <MenuItem onClick={logoutHandler}>Logout</MenuItem>
                         </MenuList>
                     </Menu>
-                </div>
+                </Flex>
             </Flex>
 
             <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
@@ -211,7 +229,7 @@ const SideDrawer = () => {
                                 />
                             ))
                         )}
-                        {loadingChat && <Spinner ml="auto" d="flex" />}
+                        {loadingChat && <Spinner ml="auto" display="flex" />}
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>

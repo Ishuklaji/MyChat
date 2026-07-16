@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
+import { BASE_URL } from "../../config/api";
 
 const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -35,7 +36,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.get(`https://lacharla.onrender.com/api/user?search=${search}`, config);
+            const { data } = await axios.get(`${BASE_URL}/api/user?search=${search}`, config);
             console.log(data);
             setLoading(false);
             setSearchResult(data);
@@ -63,7 +64,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                 },
             };
             const { data } = await axios.put(
-                `https://lacharla.onrender.com/api/chat/rename`,
+                `${BASE_URL}/api/chat/rename`,
                 {
                     chatId: selectedChat._id,
                     chatName: groupChatName,
@@ -121,7 +122,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                 },
             };
             const { data } = await axios.put(
-                `https://lacharla.onrender.com/api/chat/groupadd`,
+                `${BASE_URL}/api/chat/groupadd`,
                 {
                     chatId: selectedChat._id,
                     userId: user1._id,
@@ -166,7 +167,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                 },
             };
             const { data } = await axios.put(
-                `https://lacharla.onrender.com/api/chat/groupremove`,
+                `${BASE_URL}/api/chat/groupremove`,
                 {
                     chatId: selectedChat._id,
                     userId: user1._id,
@@ -194,7 +195,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
 
     return (
         <>
-            <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+            <IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
 
             <Modal onClose={onClose} isOpen={isOpen} isCentered>
                 <ModalOverlay />
@@ -202,15 +203,15 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                     <ModalHeader
                         fontSize="35px"
                         fontFamily="Work sans"
-                        d="flex"
+                        display="flex"
                         justifyContent="center"
                     >
                         {selectedChat.chatName}
                     </ModalHeader>
 
                     <ModalCloseButton />
-                    <ModalBody d="flex" flexDir="column" alignItems="center">
-                        <Box w="100%" d="flex" flexWrap="wrap" pb={3}>
+                    <ModalBody display="flex" flexDir="column" alignItems="center">
+                        <Box w="100%" display="flex" flexWrap="wrap" pb={3}>
                             {selectedChat.users.map((u) => (
                                 <UserBadgeItem
                                     key={u._id}
@@ -220,7 +221,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                                 />
                             ))}
                         </Box>
-                        <FormControl d="flex">
+                        <FormControl display="flex">
                             <Input
                                 placeholder="Chat Name"
                                 mb={3}

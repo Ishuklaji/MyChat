@@ -2,13 +2,14 @@ import {
     Modal, ModalOverlay, ModalContent, ModalHeader,
     ModalFooter, ModalBody, ModalCloseButton, Button,
     useDisclosure, FormControl, Input, useToast,
-    Box, Flex
+    Flex
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
+import { BASE_URL } from "../../config/api";
 
 const GroupChatModal = ({ children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,7 +51,7 @@ const GroupChatModal = ({ children }) => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.get(`https://lacharla.onrender.com/api/user?search=${search}`, config);
+            const { data } = await axios.get(`${BASE_URL}/api/user?search=${search}`, config);
             console.log(data);
             setLoading(false);
             setSearchResult(data);
@@ -89,7 +90,7 @@ const GroupChatModal = ({ children }) => {
                 },
             };
             const { data } = await axios.post(
-                `https://lacharla.onrender.com/api/chat/group`,
+                `${BASE_URL}/api/chat/group`,
                 {
                     name: groupChatName,
                     users: JSON.stringify(selectedUsers.map((u) => u._id)),
@@ -127,13 +128,13 @@ const GroupChatModal = ({ children }) => {
                     <ModalHeader
                         fontSize="35px"
                         fontFamily="Work sans"
-                        d="flex"
+                        display="flex"
                         justifyContent="center"
                     >
                         Create Group Chat
                     </ModalHeader>
                     <ModalCloseButton />
-                    <ModalBody d="flex" flexDir="column" alignItems="center">
+                    <ModalBody display="flex" flexDir="column" alignItems="center">
                         <FormControl>
                             <Input
                                 placeholder="Chat Name"

@@ -1,4 +1,4 @@
-import { Box, Stack, Text, useToast, Button, Flex } from "@chakra-ui/react";
+import { Box, Stack, Text, useToast, Button, Flex, useColorModeValue } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { getSender } from "../config/ChatLogics";
@@ -6,6 +6,7 @@ import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
 import { AddIcon } from "@chakra-ui/icons";
+import { BASE_URL } from "../config/api";
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
@@ -13,6 +14,10 @@ const MyChats = ({ fetchAgain }) => {
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
   const toast = useToast();
+  const panelBg = useColorModeValue("white", "gray.800");
+  const listBg = useColorModeValue("#F8F8F8", "gray.700");
+  const inactiveBg = useColorModeValue("#E8E8E8", "gray.600");
+  const inactiveColor = useColorModeValue("black", "white");
 
   const fetchChats = async () => {
     // console.log(user._id);
@@ -23,7 +28,7 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
 
-      const { data } = await axios.get("https://lacharla.onrender.com/api/chat", config);
+      const { data } = await axios.get(`${BASE_URL}/api/chat`, config);
       setChats(data);
     } catch (error) {
       toast({
@@ -49,7 +54,7 @@ const MyChats = ({ fetchAgain }) => {
       flexDir="column"
       alignItems="center"
       p={3}
-      bg="white"
+      bg={panelBg}
       w={{ base: "100%", md: "31%" }}
       borderRadius="lg"
       borderWidth="1px"
@@ -66,7 +71,9 @@ const MyChats = ({ fetchAgain }) => {
         My Chats
         <GroupChatModal>
           <Button
-            d="flex"
+            display="flex"
+            colorScheme="teal"
+            variant="solid"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
             rightIcon={<AddIcon />}
           >
@@ -77,9 +84,8 @@ const MyChats = ({ fetchAgain }) => {
       <Flex
         flexDir="column"
         p={3}
-        bg="#F8F8F8"
+        bg={listBg}
         w="100%"
-        // h="100%"
         borderRadius="lg"
         overflowY="scroll"
       >
@@ -89,11 +95,12 @@ const MyChats = ({ fetchAgain }) => {
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-                color={selectedChat === chat ? "white" : "black"}
+                bg={selectedChat === chat ? "teal.400" : inactiveBg}
+                color={selectedChat === chat ? "white" : inactiveColor}
                 px={3}
                 py={2}
                 borderRadius="lg"
+                transition="background 0.15s ease"
                 key={chat._id}
               >
                 <Text>

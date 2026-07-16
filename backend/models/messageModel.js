@@ -9,7 +9,13 @@ const messageModel = mongoose.Schema(
         chat: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Chat"
-        }
+        },
+        reactions: [
+            {
+                user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                emoji: { type: String },
+            },
+        ],
     },
     {
         timestamps: true

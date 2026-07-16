@@ -2,6 +2,7 @@ import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, V
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../config/api";
 
 const Signup = () => {
     const [show, setShow] = useState(false);
@@ -47,7 +48,7 @@ const Signup = () => {
                 },
             };
             const { data } = await axios.post(
-                "https://lacharla.onrender.com/api/user",
+                `${BASE_URL}/api/user`,
                 {
                     name,
                     email,

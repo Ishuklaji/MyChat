@@ -12,8 +12,17 @@ const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 
 dotenv.config()
 const app = express();
+
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim().replace(/\/$/, ""));
+
+const corsOptions = {
+    origin: allowedOrigins,
+};
+
 app.use(express.json())
-app.use(cors());
+app.use(cors(corsOptions));
 
 
 connectDB()
@@ -48,14 +57,16 @@ const server = app.listen(PORT, console.log(`server started at http://localhost:
 const io = require('socket.io')(server, {
     pingTimeout: 60000,
     cors: {
-        origin: "https://la-charla.netlify.app/"
+        origin: allowedOrigins,
     }
 })
 
 io.on('connection', (socket) => {
     console.log('connected to socket.io')
+    let setupUserId;
 
     socket.on('setup', (userData) => {
+        setupUserId = userData._id
         socket.join(userData._id)
         console.log(userData._id)
         socket.emit("connected")
@@ -79,8 +90,16 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.off("setup", () => {
+    socket.on("message reaction", (updatedMessage) => {
+        var chat = updatedMessage.chat
+        if (!chat || !chat.users) return
+        chat.users.forEach(user => {
+            socket.in(user._id).emit("message reaction updated", updatedMessage)
+        })
+    })
+
+    socket.on("disconnect", () => {
         console.log("USER DISCONNECTED");
-        socket.leave(userData._id);
+        if (setupUserId) socket.leave(setupUserId);
     });
 })
