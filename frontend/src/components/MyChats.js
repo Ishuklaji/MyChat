@@ -20,7 +20,7 @@ const MyChats = ({ fetchAgain }) => {
   const inactiveColor = useColorModeValue("black", "white");
 
   const fetchChats = async () => {
-    // console.log(user._id);
+    
     try {
       const config = {
         headers: {
