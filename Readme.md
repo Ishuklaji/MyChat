@@ -15,7 +15,7 @@ Uses Socket.io for real time communication and stores user details in encrypted 
 
 ## Demo
 
-https://lacharla.vercel.app
+https://la-charla.vercel.app
 
 ## Getting Started Locally
 
